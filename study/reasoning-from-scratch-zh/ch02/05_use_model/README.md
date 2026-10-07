@@ -1,4 +1,4 @@
-# Run Inference and Chat With the Model
+# 运行推理并与模型聊天
 
 &nbsp;
 
@@ -6,20 +6,19 @@
 
 &nbsp;
 
-This folder contains standalone example scripts to generate text with the model we loaded in chapter 2 (and exercises):
+本目录包含一些独立示例脚本，用于使用第 2 章加载的模型生成文本（以及运行练习）：
 
-- `generate_simple.py`: Generates text similar to the main chapter.
-- `chat.py`: Similar to the code above, as an interactive wrapper so that we can prompt the model multiple times without having to reload the model into memory each time.
-- `chat_multiturn.py`: Same as above, but with a memory feature to remember the message history.
+- `generate_simple.py`：生成与本章主要代码类似的文本。
+- `chat.py`：与上面的代码类似，但提供交互式封装，可以多次向模型发送提示，而不必每次都将模型重新加载到内存中。
+- `chat_multiturn.py`：与上面相同，但增加了记忆功能，可以记住消息历史。
 
 
-
-More usage details are provided in the sections below.
+下面的章节会提供更多使用细节。
 
 &nbsp;
 ## generate_simple.py
 
-This simple function loads the model as described in chapter 2 and uses the `generate_text_simple_cache_stream` function from the chapter 2 exercises. You can use the function as follows (replace `uv run` with `python` if you are not using `uv`):
+该简单函数按照第 2 章中的说明加载模型，并使用第 2 章练习里的 `generate_text_simple_cache_stream` 函数。使用方式如下（如果不使用 `uv`，请将 `uv run` 替换为 `python`）：
 
 ```bash
 uv run ch02/05_use_model/generate_simple.py
@@ -40,7 +39,7 @@ Time: 1.52 sec
 22 tokens/sec
 ```
 
-The function is useful if you want to quickly try out different prompts with the base or reasoning variant. The additional options are listed below:
+如果你想快速尝试基础变体或推理变体的不同提示，这个函数很有用。下面列出其他选项：
 
 ```bash
 usage: generate_simple.py [-h] [--device DEVICE]
@@ -68,12 +67,12 @@ options:
 &nbsp;
 ## chat.py
 
-Similar to the function above, this function is useful to try different prompts on the base and reasoning models. 
+与上面的函数类似，该函数适合尝试基础模型和推理模型的不同提示。
 
-However, in contrast to the previous function, this function keeps the user in an interactive mode so that the model doesn't have to be reloaded each time:
+不过，与前一个函数不同，它会让用户保持在交互模式中，因此无需每次重新加载模型：
 
 ```bash
-uv run ch02/05_use_model/chat.py        
+uv run ch02/05_use_model/chat.py
 Using Apple Silicon GPU (MPS)
 ✓ qwen3/qwen3-0.6B-base.pth already up-to-date
 
@@ -117,7 +116,7 @@ Time: 1.04 sec
 ------------------------------------------------------------
 ```
 
-Additional options are listed below:
+下面列出其他选项：
 
 ```bash
 usage: chat.py [-h] [--device DEVICE] [--max_new_tokens MAX_NEW_TOKENS] [--compile]
@@ -141,7 +140,7 @@ options:
 
 ## chat_multiturn.py
 
-This function is similar to the one above, except it adds a multi-turn memory so that the LLM remembers the conversation from the past turns. It is highly recommended to use the reasoning variant here as the base model struggles with conversations:
+该函数与上面的函数类似，但增加了多轮记忆，使大语言模型能够记住之前轮次的对话。这里强烈建议使用推理变体，因为基础模型处理对话时表现不佳：
 
 
 
@@ -175,7 +174,7 @@ What is 1+1 in short?
 <think>
 Okay, the user is asking, "What is 1+1 in short?" Let me break this down. First, they want to know the result of adding 1 and 1. In math, 1 plus 1 equals 2. But the question says "in short," which probably means they want a concise answer without the full calculation.
 
-So, the answer is straightforward. 1+1=2. But maybe they want a more concise way to write it? Like, "2" or "2+2"? But "2" is more direct. Let me check if there's any trick here. Sometimes people might think of 1+1 as something else, but no, it's just two ones. 
+So, the answer is straightforward. 1+1=2. But maybe they want a more concise way to write it? Like, "2" or "2+2"? But "2" is more direct. Let me check if there's any trick here. Sometimes people might think of 1+1 as something else, but no, it's just two ones.
 
 I should make sure to present the answer clearly. Since the user is asking in a short form, maybe they just want the number 2. So the final answer is 2.
 </think>
@@ -204,7 +203,7 @@ Time: 5.21 sec
 
 
 
-Additional options are listed below:
+下面列出其他选项：
 
 ```bash
 usage: chat_multiturn.py [-h] [--device DEVICE] [--max_new_tokens MAX_NEW_TOKENS]
@@ -222,4 +221,3 @@ options:
   --compile             Compile PyTorch model (default: False).
   --reasoning           Use reasoning model variant (default: False).
 ```
-

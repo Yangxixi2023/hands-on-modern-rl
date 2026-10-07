@@ -1,6 +1,6 @@
 # 《从零构建推理模型》中文学习副本
 
-这是 Sebastian Raschka《Build a Reasoning Model (From Scratch)》的中文代码学习副本。代码、模型实现、数据、脚本和测试来自官方仓库最新版本；第 2–8 章及附录 C–F 的 Notebook 教学文字已翻译为中文，代码单元格保持原样。
+这是 Sebastian Raschka《Build a Reasoning Model (From Scratch)》的中文代码学习副本。代码、模型实现、数据、脚本和测试来自官方仓库最新版本；第 2–8 章、附录 C–F 的 Notebook 教学文字，以及仓库中的辅助 README、安装、测试和排障文档，均以官方最新英文源为原文重新翻译；代码单元格和代码块保持原样。
 
 - [官方英文仓库](https://github.com/rasbt/reasoning-from-scratch)
 - [中文翻译仓库](https://github.com/xbsheng/reasoning-from-scratch-zh)

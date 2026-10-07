@@ -1,12 +1,12 @@
-# Chapter 5: Inference-Time Scaling via Self-Refinement
+# 第 5 章：通过自我细化进行推理时扩展
 
 
 &nbsp;
-## Bonus materials
+## 补充材料
 
-- [self_refinement_math500.py](self_refinement_math500.py): standalone script to evaluate models with self-refinement on the MATH-500 dataset
+- [self_refinement_math500.py](self_refinement_math500.py)：使用自我细化在 MATH-500 数据集上评估模型的独立脚本
 
-The script imports functionality from the [`reasoning_from_scratch`](../../reasoning_from_scratch) package to avoid code duplication. (See [chapter 2 setup instructions](../../ch02/02_setup-tips/python-instructions.md) for installation details.)
+该脚本从 [`reasoning_from_scratch`](../../reasoning_from_scratch) 包导入功能，以避免代码重复。（安装详情请参阅[第 2 章配置说明](../../ch02/02_setup-tips/python-instructions.md)。）
 
 
 
@@ -14,7 +14,7 @@ The script imports functionality from the [`reasoning_from_scratch`](../../reaso
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不是 `uv` 用户，请将下面示例中的 `uv run ...py` 替换为 `python ...py`。
 
 ---
 
@@ -22,9 +22,9 @@ The script imports functionality from the [`reasoning_from_scratch`](../../reaso
 
 &nbsp;
 
-## Self-refinement
+## 自我细化
 
-The [`self_refinement_math500.py`](self_refinement_math500.py) script implements the self-refinement method from chapter 5.
+[`self_refinement_math500.py`](self_refinement_math500.py) 脚本实现了第 5 章介绍的自我细化方法。
 
 
 &nbsp;
@@ -35,36 +35,36 @@ The [`self_refinement_math500.py`](self_refinement_math500.py) script implements
 
 
 
-| #  | Method          | Scorer    | Iterations | Model     | Accuracy | Time      |
+| #  | 方法          | 评分器    | 迭代次数 | 模型     | 准确率 | 时间      |
 |----|-----------------|-----------|------------|-----------|----------|-----------|
-| 1  | Baseline (ch03) | -         | -          | Base      | 15.2%    | 10.1 min  |
-| 2  | Self-refinement | None      | 1          | Base      | 25.0%    | 84.8 min  |
-| 3  | Self-refinement | None      | 2          | Base      | 22.0%    | 165.4 min |
+| 1  | 基线（ch03） | -         | -          | 基础      | 15.2%    | 10.1 min  |
+| 2  | 自我细化 | None      | 1          | 基础      | 25.0%    | 84.8 min  |
+| 3  | 自我细化 | None      | 2          | 基础      | 22.0%    | 165.4 min |
 |    |                 |           |            |           |          |           |
-| 4  | Self-refinement | Heuristic | 1          | Base      | 21.6%    | 84.7 min  |
-| 5  | Self-refinement | Heuristic | 2          | Base      | 20.8%    | 151.4 min |
+| 4  | 自我细化 | Heuristic | 1          | 基础      | 21.6%    | 84.7 min  |
+| 5  | 自我细化 | Heuristic | 2          | 基础      | 20.8%    | 151.4 min |
 |    |                 |           |            |           |          |           |
-| 6  | Self-refinement | Logprob   | 1          | Base      | 21.4%    | 85.3 min  |
-| 7  | Self-refinement | Logprob   | 2          | Base      | 22.0%    | 165.3 min |
+| 6  | 自我细化 | Logprob   | 1          | 基础      | 21.4%    | 85.3 min  |
+| 7  | 自我细化 | Logprob   | 2          | 基础      | 22.0%    | 165.3 min |
 |    |                 |           |            |           |          |           |
-| 8  | Self-refinement | Logp-ex   | 1          | Base      | 20.4%    | 85.0 min  |
-| 9  | Self-refinement | Logp-ex   | 2          | Base      | 21.2%    | 160.2 min |
+| 8  | 自我细化 | Logp-ex   | 1          | 基础      | 20.4%    | 85.0 min  |
+| 9  | 自我细化 | Logp-ex   | 2          | 基础      | 21.2%    | 160.2 min |
 |    |                 |           |            |           |          |           |
-| 10 | Baseline (ch03) | -         | -          | Reasoning | 48.2%    | 182.1 min |
-| 11 | Self-refinement | None      | 1          | Reasoning | 56.6%    | 498.8 min |
-| 12 | Self-refinement | None      | 2          | Reasoning | 56.6%    | 713.9 min |
+| 10 | 基线（ch03） | -         | -          | 推理      | 48.2%    | 182.1 min |
+| 11 | 自我细化 | None      | 1          | 推理      | 56.6%    | 498.8 min |
+| 12 | 自我细化 | None      | 2          | 推理      | 56.6%    | 713.9 min |
 |    |                 |           |            |           |          |           |
-| 13 | Self-refinement | Heuristic | 1          | Reasoning | 57.8%    | 498.6 min |
-| 14 | Self-refinement | Heuristic | 2          | Reasoning | 57.8%    | 713.9 min |
+| 13 | 自我细化 | Heuristic | 1          | 推理      | 57.8%    | 498.6 min |
+| 14 | 自我细化 | Heuristic | 2          | 推理      | 57.8%    | 713.9 min |
 |    |                 |           |            |           |          |           |
-| 15 | Self-refinement | Logprob   | 1          | Reasoning | 48.4%    | 499.7 min |
-| 16 | Self-refinement | Logprob   | 2          | Reasoning | 48.6%    | 753.0 min |
+| 15 | 自我细化 | Logprob   | 1          | 推理      | 48.4%    | 499.7 min |
+| 16 | 自我细化 | Logprob   | 2          | 推理      | 48.6%    | 753.0 min |
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+表中的准确率和运行时间是在 MATH-500 测试集的全部 500 个样本上，使用 “cuda” GPU（DGX Spark）计算得到的。
 
-The following codes give instructions on how to run the self-consistency experiments in rows 4-12 (replace `uv run` with `python` if you are not a `uv` user).
+以下代码说明如何运行第 4–12 行的自洽性实验（如果你不是 `uv` 用户，请将 `uv run` 替换为 `python`）。
 
-**Row 2:**
+**第 2 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -76,7 +76,7 @@ uv run self_refinement_math500.py \
     --scoring "none"
 ```
 
-**Row 3:**
+**第 3 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -88,7 +88,7 @@ uv run self_refinement_math500.py \
     --scoring "none"
 ```
 
-**Row 4:**
+**第 4 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -100,7 +100,7 @@ uv run self_refinement_math500.py \
     --scoring "heuristic"
 ```
 
-**Row 5:**
+**第 5 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -112,7 +112,7 @@ uv run self_refinement_math500.py \
     --scoring "heuristic"
 ```
 
-**Row 6:**
+**第 6 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -124,7 +124,7 @@ uv run self_refinement_math500.py \
     --scoring "logprob"
 ```
 
-**Row 7:**
+**第 7 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -136,7 +136,7 @@ uv run self_refinement_math500.py \
     --scoring "logprob"
 ```
 
-**Row 8:**
+**第 8 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -148,7 +148,7 @@ uv run self_refinement_math500.py \
     --scoring "logprob_extract"
 ```
 
-**Row 9:**
+**第 9 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -160,7 +160,7 @@ uv run self_refinement_math500.py \
     --scoring "logprob_extract"
 ```
 
-**Row 11:**
+**第 11 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -172,7 +172,7 @@ uv run self_refinement_math500.py \
     --scoring "none"
 ```
 
-**Row 12:**
+**第 12 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -184,7 +184,7 @@ uv run self_refinement_math500.py \
     --scoring "none"
 ```
 
-**Row 13:**
+**第 13 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -196,7 +196,7 @@ uv run self_refinement_math500.py \
     --scoring "heuristic"
 ```
 
-**Row 14:**
+**第 14 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -208,7 +208,7 @@ uv run self_refinement_math500.py \
     --scoring "heuristic"
 ```
 
-**Row 15:**
+**第 15 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -220,7 +220,7 @@ uv run self_refinement_math500.py \
     --scoring "logprob"
 ```
 
-**Row 16:**
+**第 16 行：**
 
 ```bash
 uv run self_refinement_math500.py \
@@ -237,9 +237,9 @@ uv run self_refinement_math500.py \
 
 &nbsp;
 
-## Self-consistency with scorer-based tie-breaker
+## 使用评分器打破平局的自洽性
 
-The [`self_consistency_scorer_math500.py`](self_consistency_scorer_math500.py) extends the self-consistency with tie-breaking based on the scorers implemented in chapter 5.
+[`self_consistency_scorer_math500.py`](self_consistency_scorer_math500.py) 在第 5 章实现的评分器基础上扩展了自洽性方法，用于打破平局。
 
 
 &nbsp;
@@ -250,19 +250,19 @@ The [`self_consistency_scorer_math500.py`](self_consistency_scorer_math500.py) e
 
 
 
-|   | Method                                   | Model | Accuracy | Time      |
+|   | 方法                                   | 模型 | 准确率 | 时间      |
 |---|------------------------------------------|-------|----------|-----------|
-| 1 | Chapter 4 baseline with CoT prompting    | Base  | 33.4%    | 129.2 min |
-| 2 | Self-consistency (n=3) + majority vote   | Base  | 43.2%    | 328.2 min |
-| 3 | Self-consistency (n=3) + heuristic       | Base  | 43.4%    | 326.5 min |
-| 4 | Self-consistency (n=3) + avg. logprob    | Base  | 44.8%    | 327.7 min |
+| 1 | 第 4 章使用 CoT 提示的基线    | 基础  | 33.4%    | 129.2 min |
+| 2 | 自洽性（n=3）+ 多数投票   | 基础  | 43.2%    | 328.2 min |
+| 3 | 自洽性（n=3）+ 启发式       | 基础  | 43.4%    | 326.5 min |
+| 4 | 自洽性（n=3）+ 平均 logprob    | 基础  | 44.8%    | 327.7 min |
 
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+表中的准确率和运行时间是在 MATH-500 测试集的全部 500 个样本上，使用 “cuda” GPU（DGX Spark）计算得到的。
 
-The following codes give instructions on how to run the self-consistency experiments in rows 2-4 (replace `uv run` with `python` if you are not a `uv` user).
+以下代码说明如何运行第 2–4 行的自洽性实验（如果你不是 `uv` 用户，请将 `uv run` 替换为 `python`）。
 
-**Row 2:**
+**第 2 行：**
 
 ```bash
 uv run self_consistency_scorer_math500.py \
@@ -275,7 +275,7 @@ uv run self_consistency_scorer_math500.py \
     --scoring "none"
 ```
 
-**Row 3:**
+**第 3 行：**
 
 ```bash
 uv run self_consistency_scorer_math500.py \
@@ -288,7 +288,7 @@ uv run self_consistency_scorer_math500.py \
     --scoring "heuristic"
 ```
 
-**Row 4:**
+**第 4 行：**
 
 ```bash
 uv run self_consistency_scorer_math500.py \
@@ -303,13 +303,13 @@ uv run self_consistency_scorer_math500.py \
 
 &nbsp;
 
-## Best-of-N
+## N 选最佳
 
-The [`self_consistency_scorer_math500.py`](self_consistency_scorer_math500.py)  implements the Best-of-N inference-scaling approach.
+[`self_consistency_scorer_math500.py`](self_consistency_scorer_math500.py) 实现了 N 选最佳的推理时扩展方法。
 
-Best-of-N is similar to self-consistency in that we generate multiple answers. However, instead of selecting the final answer via a majority vote, we score all generated answers using a scoring function.
+N 选最佳与自洽性类似，都会生成多个答案。但它不是通过多数投票选择最终答案，而是使用评分函数为所有生成的答案评分。
 
-The [`best_of_n_math500.py`](best_of_n_math500.py) extends the self-consistency with tie-breaking based on the scorers implemented in chapter 5.
+[`best_of_n_math500.py`](best_of_n_math500.py) 在第 5 章实现的评分器基础上扩展了自洽性方法，用于打破平局。
 
 
 &nbsp;
@@ -318,18 +318,18 @@ The [`best_of_n_math500.py`](best_of_n_math500.py) extends the self-consistency 
 
 &nbsp;
 
-|   | Method                                   | Model | Accuracy | Time      |
+|   | 方法                                   | 模型 | 准确率 | 时间      |
 |---|------------------------------------------|-------|----------|-----------|
-| 1 | Baseline with chain-of-thought prompting | Base  | 33.4%    | 129.2 min |
-| 2 | Best-of-N (n=3) + heuristic              | Base  | 40.6%    | 327.7 min |
-| 3 | Best-of-N (n=3) + avg. logprob           | Base  | 43.2%    | 330.2 min |
+| 1 | 使用思维链提示的基线 | 基础  | 33.4%    | 129.2 min |
+| 2 | N 选最佳（n=3）+ 启发式              | 基础  | 40.6%    | 327.7 min |
+| 3 | N 选最佳（n=3）+ 平均 logprob           | 基础  | 43.2%    | 330.2 min |
 
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+表中的准确率和运行时间是在 MATH-500 测试集的全部 500 个样本上，使用 “cuda” GPU（DGX Spark）计算得到的。
 
-The following codes give instructions on how to run the self-consistency experiments in rows 2 and 3 (replace `uv run` with `python` if you are not a `uv` user).
+以下代码说明如何运行第 2、3 行的自洽性实验（如果你不是 `uv` 用户，请将 `uv run` 替换为 `python`）。
 
-**Row 2:**
+**第 2 行：**
 
 ```bash
 uv run best_of_n_math500.py \
@@ -343,7 +343,7 @@ uv run best_of_n_math500.py \
 )
 ```
 
-**Row 3:**
+**第 3 行：**
 
 ```bash
 uv run best_of_n_math500.py \

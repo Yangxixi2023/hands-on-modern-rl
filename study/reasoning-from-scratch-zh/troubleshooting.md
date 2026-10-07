@@ -1,11 +1,11 @@
-# Troubleshooting Guide
+# 故障排查指南
 
-This page collects common issues and setup tips encountered while working through the book.
+本页汇总阅读本书时遇到的常见问题和设置建议。
 
 &nbsp;
-## JupyterLab scrolling bug
+## JupyterLab 滚动错误
 
-If you are viewing the notebook code in JupyterLab rather than VSCode, note that JupyterLab (in its default setting) has had scrolling bugs in recent versions. My recommendation is to go to Settings -> Settings Editor and change the "Windowing mode" to "none" (as illustrated below), which seems to address the issue.
+如果你是在 JupyterLab 而不是 VSCode 中查看 Notebook 代码，请注意 JupyterLab 最近版本的默认设置存在滚动问题。建议前往 Settings -> Settings Editor，将“Windowing mode”改为“none”（如下图所示），这样似乎可以解决问题。
 
 
 ![Jupyter Glitch 1](https://sebastianraschka.com/images/reasoning-from-scratch-images/bonus/setup/jupyter_glitching_1.webp)
@@ -16,38 +16,38 @@ If you are viewing the notebook code in JupyterLab rather than VSCode, note that
 
 
 &nbsp;
-## Chapter 2
+## 第 2 章
 
 &nbsp;
-### File Download Issues
+### 文件下载问题
 
-Please use [this discussion page](https://github.com/rasbt/reasoning-from-scratch/discussions/145) if you have any issues with file downloads.
+如果文件下载遇到问题，请使用[此讨论页](https://github.com/rasbt/reasoning-from-scratch/discussions/145)。
 
-The code downloads from the following Hugging Face locations, which you can also open manually in a browser to check whether your machine or network is blocking them:
+代码从以下 Hugging Face 地址下载文件。你也可以在浏览器中手动打开这些地址，检查机器或网络是否阻止了访问：
 
-- Chapter 2 model and tokenizer files: [rasbt/qwen3-from-scratch](https://huggingface.co/rasbt/qwen3-from-scratch/tree/main)
-- Base model file: [qwen3-0.6B-base.pth](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/qwen3-0.6B-base.pth)
-- Base tokenizer file: [tokenizer-base.json](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/tokenizer-base.json)
-- Reasoning model file: [qwen3-0.6B-reasoning.pth](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/qwen3-0.6B-reasoning.pth)
-- Reasoning tokenizer file: [tokenizer-reasoning.json](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/tokenizer-reasoning.json)
-- Chapter 7 GRPO checkpoints: [rasbt/qwen3-from-scratch-grpo-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints/tree/main)
-- Chapter 8 distillation checkpoints: [rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints/tree/main)
+- 第 2 章模型和分词器文件： [rasbt/qwen3-from-scratch](https://huggingface.co/rasbt/qwen3-from-scratch/tree/main)
+- 基础模型文件： [qwen3-0.6B-base.pth](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/qwen3-0.6B-base.pth)
+- 基础分词器文件： [tokenizer-base.json](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/tokenizer-base.json)
+- 推理模型文件： [qwen3-0.6B-reasoning.pth](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/qwen3-0.6B-reasoning.pth)
+- 推理分词器文件： [tokenizer-reasoning.json](https://huggingface.co/rasbt/qwen3-from-scratch/resolve/main/tokenizer-reasoning.json)
+- 第 7 章 GRPO 检查点： [rasbt/qwen3-from-scratch-grpo-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-grpo-checkpoints/tree/main)
+- 第 8 章蒸馏检查点： [rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints/tree/main)
 
 &nbsp;
-#### SSL / proxy / certificate errors
+#### SSL / 代理 / 证书错误
 
-If a model download fails with errors mentioning `SSL`, `CERTIFICATE_VERIFY_FAILED`, or `ProxyError`, the issue is often environmental rather than a missing file.
+如果模型下载失败并出现包含 `SSL`、`CERTIFICATE_VERIFY_FAILED` 或 `ProxyError` 的错误，问题通常来自环境，而不是文件缺失。
 
-This is uncommon overall, but it can happen on work or school machines where a VPN, proxy, firewall, or antivirus product intercepts HTTPS traffic. In that case, try the following:
+这种情况总体并不常见，但在 VPN、代理、防火墙或杀毒软件拦截 HTTPS 流量的工作或学校电脑上可能发生。此时可尝试：
 
-- Check whether the relevant Hugging Face URL listed above opens in your browser.
-- If the tokenizer downloads but the `.pth` model file does not, the proxy may be blocking larger files or the `.pth` extension.
-- Ask your IT team to allow the download or to make the proxy certificate trusted by Python.
-- On some managed machines, readers reported success with `pip install pip-system-certs`, which makes Python use the operating system certificate store.
+- 检查上面列出的 Hugging Face 地址是否能在浏览器中打开。
+- 如果分词器可以下载，但 `.pth` 模型文件不能，代理可能阻止了较大的文件或 `.pth` 扩展名。
+- 请 IT 团队允许下载，或让 Python 信任代理证书。
+- 在一些受管理的机器上，读者报告使用 `pip install pip-system-certs` 成功；该命令让 Python 使用操作系统证书存储。
 
 &nbsp;
 ### `InductorError: CppCompileError`
-If you are a Linux user and see an `InductorError: CppCompileError: C++ compile error` when executing `torch.compile` containing the following lines:
+如果你是 Linux 用户，在执行 `InductorError: CppCompileError: C++ compile error` 时看到 `torch.compile`，并且错误包含以下行：
 
 ```python
 Python.h: No such file or directory
@@ -56,17 +56,17 @@ Python.h: No such file or directory
 compilation terminated.
 ```
 
-it indicates that your Python runtime may be lacking some C++ header files required for compiling the model for CPU usage.
+这表示 Python 运行时可能缺少为 CPU 编译模型所需的一些 C++ 头文件。
 
-You could for example check if the file exists: `ls -l /usr/include/python3.12/Python.h`.
+例如，可以检查文件是否存在：`ls -l /usr/include/python3.12/Python.h`。
 
-If it doesn't exist, you could then try to install a different Python runtime via
+如果文件不存在，可以尝试通过以下命令安装另一套 Python 运行时：
 
 ```bash
 sudo apt-get install -y python3.12-dev build-essential
 ```
 
-Or you could disable the C++ requirements in PyTorch before calling `torch.compile`:
+或者在调用 `torch.compile` 前禁用 PyTorch 的 C++ 要求：
 
 ```python
 import torch
@@ -77,33 +77,33 @@ inductor_config.cpp_wrapper = False
 compiled_model = torch.compile(model)
 ```
 
-Also see [#192](https://github.com/rasbt/reasoning-from-scratch/issues/192) for more context.
+更多背景请参阅 [#192](https://github.com/rasbt/reasoning-from-scratch/issues/192)。
 
 
 &nbsp;
-### Windows CPU: `fatal error C1083` with `algorithm` or `omp.h`
+### Windows CPU：`fatal error C1083` 或 `algorithm` 导致 `omp.h`
 
-If you are on Windows and `torch.compile()` fails with
+如果你在 Windows 上使用 `torch.compile()` 时出现以下错误：
 
 ```text
 fatal error C1083: Cannot open include file: 'algorithm': No such file or directory
 ```
 
-or
+或者
 
 ```text
 fatal error C1083: Cannot open include file: 'omp.h': No such file or directory
 ```
 
-the problem is usually the local Windows compiler / OpenMP setup used by TorchInductor (rather than the code in this book / repository).
+问题通常出在 TorchInductor 使用的本地 Windows 编译器或 OpenMP 配置（而不是本书或仓库中的代码）。
 
-A reader reported the following tips on a CPU-only Intel system in the [forum](https://livebook.manning.com/forum?product=raschka2&comment=583365):
+一位读者在仅使用 CPU 的 Intel 系统上，于[论坛](https://livebook.manning.com/forum?product=raschka2&comment=583365)报告了以下经验：
 
-- Upgrading PyTorch resolved the missing `algorithm` header.
-- But the missing `omp.h` header remained.
-- Using a fallback backend such as `"eager"` or `"aot_eager"` allowed the code to run.
+- 升级 PyTorch 解决了缺失的 `algorithm` 头文件。
+- 但 `omp.h` 头文件仍然缺失。
+- 使用 `"eager"` 或 `"aot_eager"` 等备用后端可以运行代码。
 
-For example:
+例如：
 
 ```python
 compiled_model = torch.compile(model, backend="eager")
@@ -113,11 +113,11 @@ compiled_model = torch.compile(model, backend="eager")
 compiled_model = torch.compile(model, backend="aot_eager")
 ```
 
-Note that this is a workaround, not a full fix. It can help, but it does not use the full TorchInductor compilation path, so speedups may be smaller than with a fully working `torch.compile()`. 
+请注意，这是一种变通方法，不是完整修复。它可能有帮助，但不会使用完整的 TorchInductor 编译路径，因此加速效果可能小于正常工作的 `torch.compile()`。
 
-**But also please keep in mind that torch.compile is not essential for this book and you can feel free to skip the section entirely.**
+**还请记住，torch.compile 对本书并非必需，你完全可以跳过这一节。**
 
-Anyways, if you are trying to make it work, before spending a lot of time debugging, it can be helpful to run a minimal sanity check first:
+无论如何，如果你想让它运行，在花大量时间调试之前，先运行一个最小的健全性检查会很有帮助：
 
 ```python
 import torch
@@ -135,23 +135,23 @@ out = opt_foo(torch.randn(10, 10).to(device), torch.randn(10, 10).to(device))
 print(out.shape)
 ```
 
-If this small example already fails, the issue is likely your PyTorch / compiler setup rather than the model code in this book / repository.
+如果这个小示例已经失败，问题很可能在 PyTorch 或编译器配置，而不是本书或仓库中的模型代码。
 
-For additional setup tips, also see [Using `torch.compile()` on Windows](ch02/04_torch-compile-windows/README.md) and the PyTorch [Windows CPU/XPU guide](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html). And, as mentioned before, if `torch.compile()` remains unstable on your system, it is fine to skip it for the book examples.
+更多设置建议还可参阅[在 Windows 上使用 `torch.compile()`](ch02/04_torch-compile-windows/README.md)和 PyTorch 的 [Windows CPU/XPU 指南](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html)。如前所述，如果 `torch.compile()` 在你的系统上仍不稳定，跳过它并运行本书示例也完全可以。
 
 
-
-&nbsp;
-## Chapter 6
 
 &nbsp;
-### Corrupted Checkpoints
-
-In `train_rlvr_grpo` (Chapter 6), a `Ctrl+C` triggers the `KeyboardInterrupt` handler to save a `-interrupt` checkpoint. If you press `Ctrl+C` a second time before the save completes, it can interrupt `torch.save` mid-write and leave a truncated `.pth` file. Wait for the `-interrupt` checkpoint message before exiting.
-
-Corrupted model checkpoints usually raise load errors or fail during evaluation; another telltale sign is that they are much smaller than the expected ~1.5 GB.
+## 第 6 章
 
 &nbsp;
-## Other Issues
+### 检查点损坏
 
-For other issues, please feel free to open a new GitHub [Issue](https://github.com/rasbt/reasoning-from-scratch/issues).
+在 `train_rlvr_grpo`（第 6 章）中，`Ctrl+C` 会触发 `KeyboardInterrupt` 处理器，保存一个 `-interrupt` 检查点。如果在保存完成前再次按 `Ctrl+C`，可能中断 `torch.save` 的写入，留下被截断的 `.pth` 文件。退出前请等待 `-interrupt` 检查点提示。
+
+损坏的模型检查点通常会在加载时产生错误或在评估时失败；另一个明显迹象是文件远小于预期的约 1.5 GB。
+
+&nbsp;
+## 其他问题
+
+如有其他问题，欢迎新建 GitHub [Issue](https://github.com/rasbt/reasoning-from-scratch/issues)。

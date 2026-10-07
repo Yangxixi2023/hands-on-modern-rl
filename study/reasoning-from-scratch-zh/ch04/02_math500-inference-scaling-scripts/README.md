@@ -1,14 +1,14 @@
-# Chapter 4: Improving Reasoning with Inference-Time Scaling
+# 第 4 章：通过推理时扩展改进推理能力
 
 
 &nbsp;
-## Bonus materials
+## 补充材料
 
-- [cot_prompting_math500.py](cot_prompting_math500.py): standalone script to evaluate models with chain-of-thought prompting on the MATH-500 dataset
-- [self_consistency_math500.py](self_consistency_math500.py): standalone script to evaluate models with self-consistency sampling on the MATH-500 dataset
-- [run_all_experiments_math500.sh](run_all_experiments_math500.sh): A convenience bash script that runs all experiments (rows 4 to 12) listed in this READMe below
+- [cot_prompting_math500.py](cot_prompting_math500.py)：使用思维链提示在 MATH-500 数据集上评估模型的独立脚本
+- [self_consistency_math500.py](self_consistency_math500.py)：使用自洽性采样在 MATH-500 数据集上评估模型的独立脚本
+- [run_all_experiments_math500.sh](run_all_experiments_math500.sh)：用于运行下方本 README 中列出的全部实验（第 4 至第 12 行）的便捷 bash 脚本
 
-Both evaluation scripts import functionality from the [`reasoning_from_scratch`](../../reasoning_from_scratch) package to avoid code duplication. (See [chapter 2 setup instructions](../../ch02/02_setup-tips/python-instructions.md) for installation details.)
+两个评估脚本都从 [`reasoning_from_scratch`](../../reasoning_from_scratch) 包导入功能，以避免代码重复。（安装详情请参阅[第 2 章配置说明](../../ch02/02_setup-tips/python-instructions.md)。）
 
 
 
@@ -16,7 +16,7 @@ Both evaluation scripts import functionality from the [`reasoning_from_scratch`]
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不是 `uv` 用户，请将下面示例中的 `uv run ...py` 替换为 `python ...py`。
 
 ---
 
@@ -24,9 +24,9 @@ Both evaluation scripts import functionality from the [`reasoning_from_scratch`]
 
 &nbsp;
 
-## Chain-of-thought prompting
+## 思维链提示
 
-The [`cot_prompting_math500.py`](self_consistency_math500.py) script implements the chain-of-thought prompting method from chapter 4.
+[`cot_prompting_math500.py`](self_consistency_math500.py) 脚本实现了第 4 章介绍的思维链提示方法。
 
 &nbsp;
 
@@ -34,17 +34,17 @@ The [`cot_prompting_math500.py`](self_consistency_math500.py) script implements 
 
 &nbsp;
 
-The table below compares this approach (row 3) with the baselines from chapter 3:
+下表将这种方法（第 3 行）与第 3 章的基线进行比较：
 
-|    | Method                                       | Model     | Accuracy | Time       |
+|    | 方法                                       | 模型     | 准确率 | 时间       |
 |----|----------------------------------------------|-----------|----------|------------|
-| 1  | Baseline (chapter 3), greedy decoding        | Base      | 15.2%    | 10.1 min   |
-| 2  | Baseline (chapter 3), greedy decoding        | Reasoning | 48.2%    | 182.1 min  |
-| 3  | Chain-of-thought prompting ("CoT")           | Base      | 40.6%    | 84.5 min   |
+| 1  | 基线（第 3 章），贪心解码        | 基础      | 15.2%    | 10.1 min   |
+| 2  | 基线（第 3 章），贪心解码        | 推理 | 48.2%    | 182.1 min  |
+| 3  | 思维链提示（“CoT”）           | 基础      | 40.6%    | 84.5 min   |
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+表中的准确率和运行时间是在 MATH-500 测试集的全部 500 个样本上，使用 “cuda” GPU（DGX Spark）计算得到的。
 
-To run the experiment in row one, use:
+运行第 1 行实验：
 
 ```bash
 python cot_prompting_math500.py \
@@ -52,7 +52,7 @@ python cot_prompting_math500.py \
 --dataset_size 500
 ```
 
-Or, with `uv:`
+或者使用 `uv`：
 
 
 ```bash
@@ -61,16 +61,16 @@ uv run cot_prompting_math500.py \
 --dataset_size 500
 ```
 
-For additional options, use the `--help` flag.
+更多选项请使用 `--help` 标志。
 
 
 
 &nbsp;
-## Self-consistency sampling
+## 自洽性采样
 
-The [`self_consistency_math500.py`](self_consistency_math500.py) script implements the sampling method from chapter 4.
+[`self_consistency_math500.py`](self_consistency_math500.py) 脚本实现了第 4 章介绍的采样方法。
 
-(Optionally, there is a [`self_consistency_math500_batched.py`](self_consistency_math500_batched.py) variant, which executes all `--num_samples` as a batch for faster processing. Note that this requires more compute memory though.)
+（可选地，还有一个 [`self_consistency_math500_batched.py`](self_consistency_math500_batched.py) 变体，会将全部 `--num_samples` 作为批次执行，从而加快处理速度。但请注意，这需要更多计算内存。）
 
 &nbsp;
 
@@ -78,28 +78,28 @@ The [`self_consistency_math500.py`](self_consistency_math500.py) script implemen
 
 &nbsp;
 
-The table below compares this approach (row 4-12) with the baselines from chapter 3 (rows 1-2):
+下表将这种方法（第 4–12 行）与第 3 章的基线（第 1–2 行）进行比较：
 
-|      | Method                                    | Model     | Accuracy | Time      |
+|      | 方法                                    | 模型     | 准确率 | 时间      |
 | ---- | ----------------------------------------- | --------- | -------- | --------- |
-| 1    | Baseline (chapter 3), greedy decoding     | Base      | 15.2%    | 10.1 min  |
-| 2    | Baseline (chapter 3), greedy decoding     | Reasoning | 48.2%    | 182.1 min |
-| 3    | Chain-of-thought prompting ("CoT")        | Base      | 40.6%    | 84.5 min  |
-| 4    | Temperature and top-p ("Top-p")           | Base      | 17.8%    | 30.7 min  |
-| 5    | "Top-p" + Self-consistency (n=3)          | Base      | 29.6%    | 97.6 min  |
-| 6    | "Top-p" + Self-consistency (n=5)          | Base      | 27.8%    | 116.8 min |
-| 7    | "Top-p" + Self-consistency (n=10)         | Base      | 31.6%    | 300.4 min |
-| 8    | "Top-p" + "CoT"                           | Base      | 33.4%    | 129.2 min |
-| 9    | Self-consistency (n=3) + "Top-p" + "CoT"  | Base      | 42.2%    | 211.6 min |
-| 10   | Self-consistency (n=5) + "Top-p" + "CoT"  | Base      | 48.0%    | 452.9 min |
-| 11   | Self-consistency (n=10) + "Top-p" + "CoT" | Base      | 52.0%    | 862.6 min |
-| 12   | Self-consistency (n=3) + "Top-p" + "CoT"  | Reasoning | 55.2%    | 544.4 min |
+| 1    | 基线（第 3 章），贪心解码     | 基础      | 15.2%    | 10.1 min  |
+| 2    | 基线（第 3 章），贪心解码     | 推理 | 48.2%    | 182.1 min |
+| 3    | 思维链提示（“CoT”）        | 基础      | 40.6%    | 84.5 min  |
+| 4    | 温度和 top-p（“Top-p”）           | 基础      | 17.8%    | 30.7 min  |
+| 5    | “Top-p” + 自洽性（n=3）          | 基础      | 29.6%    | 97.6 min  |
+| 6    | “Top-p” + 自洽性（n=5）          | 基础      | 27.8%    | 116.8 min |
+| 7    | “Top-p” + 自洽性（n=10）         | 基础      | 31.6%    | 300.4 min |
+| 8    | “Top-p” + “CoT”                           | 基础      | 33.4%    | 129.2 min |
+| 9    | 自洽性（n=3）+ “Top-p” + “CoT”  | 基础      | 42.2%    | 211.6 min |
+| 10   | 自洽性（n=5）+ “Top-p” + “CoT”  | 基础      | 48.0%    | 452.9 min |
+| 11   | 自洽性（n=10）+ “Top-p” + “CoT” | 基础      | 52.0%    | 862.6 min |
+| 12   | 自洽性（n=3）+ “Top-p” + “CoT”  | 推理 | 55.2%    | 544.4 min |
 
-The accuracy values and runtimes shown in the table were computed on all 500 samples in the MATH-500 test set using a "cuda" GPU (DGX Spark).
+表中的准确率和运行时间是在 MATH-500 测试集的全部 500 个样本上，使用 “cuda” GPU（DGX Spark）计算得到的。
 
-The following codes give instructions on how to run the self-consistency experiments in rows 4-12 (replace `uv run` with `python` if you are not a `uv` user).
+以下代码说明如何运行第 4–12 行的自洽性实验（如果你不是 `uv` 用户，请将 `uv run` 替换为 `python`）。
 
-**Row 4:**
+**第 4 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -110,7 +110,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 5:**
+**第 5 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -121,7 +121,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 6:**
+**第 6 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -132,7 +132,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 7:**
+**第 7 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -143,7 +143,7 @@ uv run self_consistency_math500.py \
     --dataset_size 500
 ```
 
-**Row 8:**
+**第 8 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -155,7 +155,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 9:**
+**第 9 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -167,7 +167,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 10:**
+**第 10 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -179,7 +179,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 11:**
+**第 11 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -191,7 +191,7 @@ uv run self_consistency_math500.py \
     --prompt_suffix "\n\nExplain step by step."
 ```
 
-**Row 12:**
+**第 12 行：**
 
 ```bash
 uv run self_consistency_math500.py \
@@ -204,5 +204,4 @@ uv run self_consistency_math500.py \
 ```
 
 
-For additional options, use the `--help` flag.
-
+更多选项请使用 `--help` 标志。

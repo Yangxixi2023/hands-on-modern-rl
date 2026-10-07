@@ -1,7 +1,7 @@
-# Chapter 8: Distilling Reasoning Models for Efficient Reasoning
+# 第 8 章：蒸馏推理模型以实现高效推理
 
 &nbsp;
-## Main chapter code
+## 主要章节代码
 
-- [ch08_main.ipynb](ch08_main.ipynb): main chapter code
-- [ch08_exercise-solutions.ipynb](ch08_exercise-solutions.ipynb): exercise solutions
+- [ch08_main.ipynb](ch08_main.ipynb)：主要章节代码
+- [ch08_exercise-solutions.ipynb](ch08_exercise-solutions.ipynb)：练习解答

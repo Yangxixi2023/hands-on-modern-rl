@@ -1,11 +1,11 @@
-# Notebook output comparison
+# Notebook 输出比较
 
-These are convenience scripts that run notebooks with two different PyTorch versions and create a Markdown report of changed cell sources and outputs to investigate any discrepancies. This is basically for manual compatibility checks and are not run by pytest or GitHub CI.
+这些便捷脚本使用两个不同的 PyTorch 版本运行 Notebook，并创建一份 Markdown 报告，记录发生变化的单元格源代码和输出，以便调查差异。这主要用于手动兼容性检查，不会由 pytest 或 GitHub CI 运行。
 
 &nbsp;
-## Run notebooks with two PyTorch versions
+## 使用两个 PyTorch 版本运行 Notebook
 
-From the repository root, run:
+在仓库根目录运行：
 
 ```bash
 uv run python tests/run_notebook_diffs/run.py \
@@ -14,9 +14,9 @@ uv run python tests/run_notebook_diffs/run.py \
   ch02/01_main-chapter-code/ch02_main.ipynb
 ```
 
-`uv` creates one isolated environment with the base dependencies installed for each version. 
+`uv` 会针对每个版本创建一个安装了基础依赖的独立环境。
 
-One can use `--with` for additional notebook dependencies:
+可以使用 `--with` 添加额外的 Notebook 依赖：
 
 ```bash
 uv run python tests/run_notebook_diffs/run.py \
@@ -27,9 +27,9 @@ uv run python tests/run_notebook_diffs/run.py \
   ch08/01_main-chapter-code/ch08_main.ipynb
 ```
 
-One can use `--python 3.11` if either PyTorch version does not provide a wheel for the default Python version.
+如果任一 PyTorch 版本没有针对默认 Python 版本提供 wheel，也可以使用 `--python 3.11`。
 
-Also note that multiple notebooks can be passed in one command. E.g.,
+还可以在一次命令中传入多个 Notebook。例如：
 
 ```bash
 notebooks=(
@@ -68,12 +68,12 @@ UV_PYTHON=3.13 uv run python tests/run_notebook_diffs/run.py \
   "${notebooks[@]}"
 ```
 
-Each notebook runs from its own directory, so relative paths behave as they do in Jupyter.
+每个 Notebook 都从自己的目录运行，因此相对路径的行为与在 Jupyter 中相同。
 
 &nbsp;
-## Results
+## 结果
 
-By default, results are written below `tests/run_notebook_diffs/results/`:
+默认情况下，结果写入 `tests/run_notebook_diffs/results/` 下方：
 
 ```text
 results/
@@ -83,13 +83,13 @@ results/
     └── comparison.md
 ```
 
-The `comparison.md` is structured like this:
+`comparison.md` 的结构如下：
 
 ---
 
-#### Cell 23
+#### 单元格 23
 
-##### Outputs
+##### 输出
 
 ```diff
 --- left outputs
@@ -104,9 +104,9 @@ The `comparison.md` is structured like this:
  ]
 ```
 
-#### Cell 87
+#### 单元格 87
 
-##### Outputs
+##### 输出
 
 ```diff
 --- left outputs
@@ -123,21 +123,18 @@ The `comparison.md` is structured like this:
 
 ---
 
+`results/` 目录会被 Git 忽略。也可以使用 `--output-dir PATH` 将结果写到其他位置。
 
+默认情况下，Notebook 出错时执行会停止。对于某些出于教学目的而故意包含错误的 Notebook，可以使用 `--allow-errors` 继续执行剩余单元格。
 
-The `results/` directory is ignored by Git. Optionally you can use `--output-dir PATH` to write to somewhere else.
-
-Execution stops on a notebook error by default. For some notebooks where errors are there on purpose for educational reasons, use `--allow-errors` to continue through the remaining cells. 
-
-There is a default timeout of 1 hour per cell but you can override that with `--timeout SECONDS`.
+每个单元格的默认超时为 1 小时，但可以使用 `--timeout SECONDS` 覆盖。
 
 &nbsp;
-## Compare existing notebooks
+## 比较已有 Notebook
 
-If you already have to executed notebooks handy, the comparator can also be used independently:
+如果已经有可用的已执行 Notebook，也可以独立使用比较器：
 
 ```bash
 uv run python tests/run_notebook_diffs/compare.py \
   first.ipynb second.ipynb --output comparison.md
 ```
-

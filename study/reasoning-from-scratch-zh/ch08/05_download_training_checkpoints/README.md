@@ -1,29 +1,29 @@
-# Downloading and Using Training Checkpoints
+# 下载并使用训练检查点
 
-This folder explains how to download and use the chapter 8 distillation checkpoints from the Hugging Face model hub at [https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints).
+本文件夹说明如何从 Hugging Face 模型中心下载并使用第 8 章的蒸馏检查点：[https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints)。
 
-The checkpoints are plain PyTorch `state_dict` files for the `reasoning_from_scratch` package. They are not Hugging Face Transformers checkpoints.
+这些检查点是 `reasoning_from_scratch` 包使用的纯 PyTorch `state_dict` 文件，不是 Hugging Face Transformers 检查点。
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不是 `uv` 用户，请将示例中的 `uv run ...py` 替换为 `python ...py`。
 
 ---
 
 &nbsp;
-## Available Checkpoint Folders
+## 可用的检查点文件夹
 
-- `ch08_distill_deepseek_r1`: the 3 DeepSeek-R1 distillation checkpoints used for rows 3-5 in [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
-- `ch08_distill_qwen3_235b_a22b`: the 3 Qwen3 235B A22B distillation checkpoints used for rows 6-8 in [`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb)
+- `ch08_distill_deepseek_r1`：[`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb) 中第 3–5 行使用的 3 个 DeepSeek-R1 蒸馏检查点
+- `ch08_distill_qwen3_235b_a22b`：[`ch08_main.ipynb`](https://github.com/rasbt/reasoning-from-scratch/blob/main/ch08/01_main-chapter-code/ch08_main.ipynb) 中第 6–8 行使用的 3 个 Qwen3 235B A22B 蒸馏检查点
 
-The checkpoints are hosted in:
+检查点托管于：
 
 - [rasbt/qwen3-from-scratch-distill-checkpoints](https://huggingface.co/rasbt/qwen3-from-scratch-distill-checkpoints)
 
 &nbsp;
-## Downloading a Checkpoint
+## 下载检查点
 
-Use `download_qwen3_distill_checkpoints(...)` from [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py):
+使用 [`reasoning_from_scratch.qwen3`](https://github.com/rasbt/reasoning-from-scratch/blob/main/reasoning_from_scratch/qwen3.py) 中的 `download_qwen3_distill_checkpoints(...)`：
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_distill_checkpoints
@@ -35,19 +35,20 @@ checkpoint_path = download_qwen3_distill_checkpoints(
 )
 ```
 
-&nbsp;
-## Which Tokenizer to Use
 
-Use the reasoning tokenizer for:
+&nbsp;
+## 应使用哪种分词器
+
+以下检查点使用推理分词器：
 
 - `ch08_distill_deepseek_r1`
 - `ch08_distill_qwen3_235b_a22b`
 
 &nbsp;
 
-## Usage Example
+## 使用示例
 
-The example below downloads a checkpoint, downloads the matching tokenizer, loads the model, and generates text with `generate_text_basic_stream_cache` from chapter 2:
+下面的示例会下载检查点，下载匹配的分词器，加载模型，并使用第 2 章的 `generate_text_basic_stream_cache` 生成文本：
 
 ```python
 from pathlib import Path
@@ -101,10 +102,11 @@ for token in generate_text_basic_stream_cache(
     print(tokenizer.decode([token_id]), end="", flush=True)
 ```
 
-&nbsp;
-## Qwen3 Example
 
-For `ch08_distill_qwen3_235b_a22b`, use the same helper with the other `distill_type`:
+&nbsp;
+## Qwen3 示例
+
+对于 `ch08_distill_qwen3_235b_a22b`，使用相同的辅助函数，但传入另一个 `distill_type`：
 
 ```python
 from reasoning_from_scratch.qwen3 import download_qwen3_distill_checkpoints
@@ -116,16 +118,17 @@ download_qwen3_distill_checkpoints(
 )
 ```
 
-&nbsp;
-## Available Steps
 
-Available saved steps for `deepseek_r1`:
+&nbsp;
+## 可用步骤
+
+`deepseek_r1` 的已保存步骤：
 
 - `06682`
 - `13364`
 - `20046`
 
-Available saved steps for `qwen3_235b_a22b`:
+`qwen3_235b_a22b` 的已保存步骤：
 
 - `05746`
 - `11492`

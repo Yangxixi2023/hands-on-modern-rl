@@ -1,84 +1,83 @@
-# Using `torch.compile()` on Windows
+# 在 Windows 上使用 `torch.compile()`
 
-`torch.compile()` relies on *TorchInductor*, which JIT-compiles kernels and requires a working C/C++ compiler toolchain. 
+`torch.compile()` 依赖 *TorchInductor*。TorchInductor 会对内核进行 JIT 编译，因此需要可用的 C/C++ 编译器工具链。
 
-So, on Windows, the setup required to make `torch.compile` work can be a bit more involved than on Linux or macOS, which usually don't require any extra steps besides installing PyTorch. 
+因此，在 Windows 上让 `torch.compile` 正常工作所需的配置可能比 Linux 或 macOS 更复杂；后两者通常只需安装 PyTorch，无需额外步骤。
 
-If you are a Windows user and using `torch.compile` sounds too tricky or complicated, don't worry, all code examples in this repository will work fine without compilation.
+如果你是 Windows 用户，觉得使用 `torch.compile` 太棘手或复杂，也不用担心：本仓库中的所有代码示例都可以在不编译的情况下正常运行。
 
-Below are some tips that I compiled based on recommendations by [Daniel Kleine](https://github.com/d-kleine) and the following [PyTorch guide](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html).
-
-&nbsp;
-## 1 Basic Setup (CPU or CUDA)
+下面的提示整理自 [Daniel Kleine](https://github.com/d-kleine) 的建议和以下 [PyTorch 指南](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html)。
 
 &nbsp;
-### 1.1 Install Visual Studio 2022
-
-- Select the **“Desktop development with C++”** workload.
-- Make sure to include the **English language pack**  (without it, you may run into UTF-8 encoding errors.)
+## 1 基础配置（CPU 或 CUDA）
 
 &nbsp;
-### 1.2 Open the correct command prompt
+### 1.1 安装 Visual Studio 2022
+
+- 选择 **“Desktop development with C++”** 工作负载。
+- 确保包含 **English language pack**（否则可能遇到 UTF-8 编码错误）。
+
+&nbsp;
+### 1.2 打开正确的命令提示符
 
 
-Launch Python from the 
+从以下命令提示符启动 Python：
 
-**"x64 Native Tools Command Prompt for VS 2022"**
+**“x64 Native Tools Command Prompt for VS 2022”**
 
-or from the
+或
 
-**"Visual Studio 2022 Developer Command Prompt"**.
+**“Visual Studio 2022 Developer Command Prompt”**。
 
-Alternatively, you can initialize the environment manually by running:
+也可以手动运行下面的命令初始化环境：
 
 ```bash
 "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 ```
 
 &nbsp;
-### 1.3 Verify that the compiler works
+### 1.3 验证编译器是否正常
 
-Run
+运行
 
    ```bash
    cl.exe
    ```
 
-If you see version information printed, the compiler is ready.
+如果看到打印出的版本信息，说明编译器已经就绪。
 
 &nbsp;
-## 2 Troubleshooting Common Errors
+## 2 常见错误排查
 
 &nbsp;
-### 2.1 Error: `cl not found`
+### 2.1 错误：`cl not found`
 
-Install **Visual Studio Build Tools** with the "C++ build tools" workload and run Python from a developer command prompt. (See this Microsoft [guide](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170) for details)
+安装带有“C++ build tools”工作负载的 **Visual Studio Build Tools**，并从开发者命令提示符运行 Python。（详情请参阅 Microsoft 的[指南](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170)。）
 
 &nbsp;
-### 2.2 Error: `triton not found` (when using CUDA)
+### 2.2 错误：`triton not found`（使用 CUDA 时）
 
-Install the Windows build of Triton manually:
+手动安装 Windows 版本的 Triton：
 
 ```bash
 pip install "triton-windows<3.4"
 ```
 
-or, if you are using `uv`:
+或者，如果你使用 `uv`：
 
 ```bash
 uv pip install "triton-windows<3.4"
 ```
 
-(As mentioned earlier, triton is required by TorchInductor for CUDA kernel compilation.)
+（如前文所述，TorchInductor 在编译 CUDA 内核时需要 triton。）
 
 
 
 &nbsp;
-## 3 Additional Notes
+## 3 其他说明
 
-On Windows, the `cl.exe` compiler is only accessible from within the Visual Studio Developer environment. This means that using `torch.compile()` in notebooks such as Jupyter may not work unless the notebook was launched from a Developer Command Prompt.
+在 Windows 上，`cl.exe` 编译器只能在 Visual Studio Developer 环境中访问。这意味着，除非从 Developer Command Prompt 启动 Notebook，否则在 Jupyter 等 Notebook 中使用 `torch.compile()` 可能无法工作。
 
-As mentioned at the beginning of this article, there is also a [PyTorch guide](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html) that some users found helpful when getting `torch.compile()` running on Windows CPU builds. However, note that it refers to PyTorch's unstable branch, so use it as a reference only.
+正如本文开头提到的，还有一份 [PyTorch 指南](https://docs.pytorch.org/tutorials/unstable/inductor_windows.html)，一些用户发现它有助于在 Windows CPU 构建上运行 `torch.compile()`。不过请注意，该指南针对 PyTorch 的不稳定分支，因此仅应作为参考。
 
-**If compilation continues to cause issues, please feel free to skip it. It's a nice bonus, but it's not important to follow the book.**
-
+**如果编译仍然引发问题，可以直接跳过。它是很好的附加功能，但不是学习本书的必要条件。**

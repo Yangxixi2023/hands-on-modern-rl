@@ -1,13 +1,13 @@
-# Chapter 7: Improving Policy Optimization in Reinforcement Learning
+# 第 7 章：改进强化学习中的策略优化
 
 &nbsp;
-## Main chapter code
+## 主要章节代码
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
-- [02_logs](02_logs): log files analyzed in this chapter
+- [01_main-chapter-code](01_main-chapter-code)：主要章节代码与练习解答
+- [02_logs](02_logs)：本章分析的日志文件
 
 &nbsp;
-## Bonus material
+## 补充材料
 
-- [03_rlvr_grpo_scripts_advanced](03_rlvr_grpo_scripts_advanced): Python scripts that implement modified versions of the original GRPO algorithm from the previous chapter to stabilize the training.
-- [04_download_trainining_checkpoints](04_download_trainining_checkpoints): Notes and examples for downloading the chapter 7 training checkpoints from Hugging Face and loading them with `reasoning_from_scratch`.
+- [03_rlvr_grpo_scripts_advanced](03_rlvr_grpo_scripts_advanced)：实现上一章原始 GRPO 算法改进版本、用于稳定训练的 Python 脚本。
+- [04_download_trainining_checkpoints](04_download_trainining_checkpoints)：从 Hugging Face 下载第 7 章训练检查点并使用 `reasoning_from_scratch` 加载它们的说明与示例。

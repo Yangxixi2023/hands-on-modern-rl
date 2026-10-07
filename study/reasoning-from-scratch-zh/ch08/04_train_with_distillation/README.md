@@ -1,38 +1,37 @@
-# Chapter 8 Bonus Material: Train with Distillation
+# 第 8 章奖励材料：使用蒸馏训练
 
-This folder contains a simple distillation script for training the Qwen3 0.6B model on teacher-generated reasoning traces, as covered in chapter 8.
+本文件夹包含一个简单的蒸馏脚本，用教师模型生成的推理轨迹训练 Qwen3 0.6B 模型，具体内容见第 8 章。
 
 &nbsp;
-## Files
+## 文件
 
-- [distill.py](distill.py): Trains Qwen3 0.6B on JSON-formatted distillation data (more on the format in the next section).
-  - By default, it trains the base model with the base tokenizer
-  - If you pass `--use_think_tokens`, it uses the reasoning tokenizer and wraps the reasoning trace as `<think>...</think>` before the final answer similar to how it's done in chapter 8
-  - After each epoch, it saves a checkpoint to `checkpoints/distill/` and appends training metrics to `logs/distill_metrics.csv`
-  - If you initialize from `--checkpoint_path` (optional) instead of the base model, you can continue an already existing checkpoint
-- [distill_batched.py](distill_batched.py): Batched version of the script above.
-  - It uses the padding-aware batched Qwen3 implementation so examples of different lengths can be trained together
-  - It adds a `--batch_size` argument to process multiple examples per optimization step
-  - It saves checkpoints to `checkpoints/distill_batched/` and appends metrics to `logs/distill_batched_metrics.csv`
-  - Of course, note that the batched variant uses much more GPU memory (depending on the batch size)
+- [distill.py](distill.py)：使用 JSON 格式的蒸馏数据训练 Qwen3 0.6B（下一节会详细说明格式）。
+  - 默认使用基础分词器训练基础模型
+  - 如果传入 `--use_think_tokens`，则使用推理分词器，并在最终答案前将推理轨迹包在 `<think>...</think>` 中，方式与第 8 章类似
+  - 每个 epoch 后，将检查点保存到 `checkpoints/distill/`，并将训练指标追加到 `logs/distill_metrics.csv`
+  - 如果使用可选的 `--checkpoint_path` 从已有检查点初始化，而不是从基础模型初始化，则可以继续训练已有检查点
+- [distill_batched.py](distill_batched.py)：上面脚本的批量版本。
+  - 使用考虑填充的批量 Qwen3 实现，因此可以将不同长度的样例放在一起训练
+  - 增加 `--batch_size` 参数，在每个优化步骤中处理多个样例
+  - 将检查点保存到 `checkpoints/distill_batched/`，并将指标追加到 `logs/distill_batched_metrics.csv`
+  - 需要注意，批量版本会使用多得多的 GPU 内存（取决于批量大小）
 
-The script imports shared functionality from the [`reasoning_from_scratch`](../../reasoning_from_scratch) package to avoid duplicating the model-loading and prompt-formatting code. (See [chapter 2 setup instructions](../../ch02/02_setup-tips/python-instructions.md) for installation details.)
+脚本从 [`reasoning_from_scratch`](../../reasoning_from_scratch) 包导入共享功能，以避免重复模型加载和提示词格式化代码。（安装详情请见[第 2 章设置说明](../../ch02/02_setup-tips/python-instructions.md)。）
 
 
 <br>
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不是 `uv` 用户，请将示例中的 `uv run ...py` 替换为 `python ...py`。
 
 ---
 
 
 &nbsp;
-## Input data format
+## 输入数据格式
 
-The input is the JSON output produced by [`../02_generate_distillation_data`](../02_generate_distillation_data). Each row should look like this:
-
+输入是 [`../02_generate_distillation_data`](../02_generate_distillation_data) 生成的 JSON 输出。每行应类似于：
 ```json
 {
   "problem": "Compute 1/2 + 1/6.",
@@ -42,20 +41,20 @@ The input is the JSON output produced by [`../02_generate_distillation_data`](..
 }
 ```
 
-For training, only the following fields are used:
 
-- `problem`: inserted into the same math prompt template used in chapter 3
-- `message_content`: required; used as the supervised target answer
-- `message_thinking`: optional; if present, it is prepended before `message_content`
+训练时只使用以下字段：
 
-Rows with missing or malformed fields are skipped automatically, and examples longer than `--max_seq_len` are filtered out before the train/validation split.
+- `problem`：插入第 3 章使用的同一个数学提示词模板
+- `message_content`：必需；作为监督目标答案
+- `message_thinking`：可选；如果存在，会放在 `message_content` 之前
+
+缺少字段或字段格式错误的行会自动跳过；提示词加答案序列长度超过 `--max_seq_len` 的样例，会在训练/验证集拆分前被过滤。
 
 
 &nbsp;
-## Example run
+## 运行示例
 
-For a quick sanity check, you can train on a small sample generated in the previous folder:
-
+如需快速进行健全性检查，可以在前一个文件夹生成的小样例上训练：
 ```bash
 uv run distill.py \
   --data_path ../02_generate_distillation_data/sample_openrouter_outputs.json \
@@ -65,16 +64,16 @@ uv run distill.py \
   --log_every 1
 ```
 
-This will:
 
-- load the base Qwen3 0.6B weights
-- tokenize the prompt/answer pairs
-- reserve 1 example for validation
-- save a checkpoint after each epoch in `checkpoints/distill/`
-- write CSV metrics to `logs/distill_metrics.csv`
+执行过程会：
 
-If you want to train with explicit reasoning tags and the reasoning tokenizer instead, add `--use_think_tokens`:
+- 加载 Qwen3 0.6B 基础权重
+- 对提示词/答案对进行分词
+- 留出 1 个样例用于验证
+- 每个 epoch 后将检查点保存到 `checkpoints/distill/`
+- 将 CSV 指标写入 `logs/distill_metrics.csv`
 
+如果想使用显式推理标签和推理分词器进行训练，请添加 `--use_think_tokens`：
 ```bash
 uv run distill.py \
   --data_path ../02_generate_distillation_data/sample_openrouter_outputs.json \
@@ -85,8 +84,8 @@ uv run distill.py \
   --use_think_tokens
 ```
 
-If you want to train in batches instead, run:
 
+如果希望改为批量训练，请运行：
 ```bash
 uv run distill_batched.py \
   --data_path ../02_generate_distillation_data/sample_openrouter_outputs.json \
@@ -99,35 +98,34 @@ uv run distill_batched.py \
 
 
 &nbsp;
-## Useful options
-
+## 有用的选项
 ```bash
 uv run distill.py --help
 ```
 
-Important arguments:
 
-- `--data_path`: path to the distillation JSON file
-- `--dataset_size`: truncate the dataset before splitting (`0` uses all rows)
-- `--validation_size`: absolute number of validation examples
-- `--epochs`: number of passes over the training split
-- `--batch_size`: number of examples per optimization step in `distill_batched.py`
-- `--lr`: AdamW learning rate
-- `--max_seq_len`: drops examples whose prompt + answer sequence is longer than this limit
-- `--checkpoint_path`: initialize from an earlier distillation checkpoint
-- `--grad_clip_norm`: optional gradient clipping
-- `--use_think_tokens`: switch to the reasoning tokenizer and `<think>...</think>` formatting
+重要参数：
 
-See the "Experiments" section below for hands-on examples.
+- `--data_path`：蒸馏 JSON 文件路径
+- `--dataset_size`：拆分前截断数据集（`0` 表示使用全部行）
+- `--validation_size`：验证样例的绝对数量
+- `--epochs`：遍历训练集的次数
+- `--batch_size`：`distill_batched.py` 每个优化步骤处理的样例数量
+- `--lr`：AdamW 学习率
+- `--max_seq_len`：丢弃提示词加答案序列超过该长度限制的样例
+- `--checkpoint_path`：从之前的蒸馏检查点初始化
+- `--grad_clip_norm`：可选的梯度裁剪
+- `--use_think_tokens`：切换到推理分词器和 `<think>...</think>` 格式
+
+下面“实验”一节提供了实际操作示例。
 
 &nbsp;
 
-## Evaluating a distilled checkpoint
+## 评估蒸馏检查点
 
-After training, you can evaluate a checkpoint on MATH-500 using the chapter 3 evaluation script.
+训练完成后，可以使用第 3 章的评估脚本在 MATH-500 上评估检查点。
 
-If you trained without `--use_think_tokens`, evaluate it as a `base` model:
-
+如果训练时没有使用 `--use_think_tokens`，请将它作为 `base` 模型评估：
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
   --dataset_size 500 \
@@ -135,8 +133,8 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
   --checkpoint_path checkpoints/distill/qwen3-0.6B-distill-step00004-epoch1.pth
 ```
 
-**Important:** If you trained with `--use_think_tokens`, evaluate it as a `reasoning` model so the reasoning tokenizer is used:
 
+**重要：** 如果训练时使用了 `--use_think_tokens`，请将它作为 `reasoning` 模型评估，以使用推理分词器：
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
   --dataset_size 500 \
@@ -146,10 +144,9 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 
 
 &nbsp;
-## Experiments
+## 实验
 
-The distillation datasets used in chapter 8 are available from my Hugging Face repo at [rasbt/math_distill](https://huggingface.co/datasets/rasbt/math_distill). In chapter 8, they are loaded via a helper that downloads partitions, e.g.,
-
+第 8 章使用的蒸馏数据集位于我的 Hugging Face 仓库 [rasbt/math_distill](https://huggingface.co/datasets/rasbt/math_distill)。第 8 章通过一个下载分区的辅助函数加载这些数据，例如：
 ````python
 from reasoning_from_scratch.ch08 import load_distill_data
 
@@ -161,51 +158,50 @@ _ = load_distill_data(
     partition="qwen3-235b-a22b-math-train.json",
     local_path="qwen3-235b-a22b-math-train.json"
 )
-````
+```
 
 
 
-For the experiments below, I used the `deepseek-r1-math-train.json` and `qwen3-235b-a22b-math-train.json` files from that dataset collection.
+下面的实验使用了该数据集中的 `deepseek-r1-math-train.json` 和 `qwen3-235b-a22b-math-train.json` 文件。
 
 
 &nbsp;
 
-|      | Teacher data                         | Epoch | MATH-500 Acc | Final val loss |
-| ---- | ------------------------------------ | ----- | ------------ | -------------- |
-| 1    | Base (chapter 3)                     | -     | 15.2%        | -              |
-| 2    | Reasoning (chapter 3)                | -     | 48.2%        | -              |
-| 3    | DeepSeek R1 distillation data        | 1     | 30.6%        | 0.5436         |
-| 4    | DeepSeek R1 distillation data        | 2     | 32.4%        | 0.5349         |
-| 5    | DeepSeek R1 distillation data        | 3     | 33.6%        | 0.5343         |
-| 6    | Qwen3 235B A22B distillation data    | 1     | 45.0%        | 0.4043         |
-| 7    | Qwen3 235B A22B distillation data    | 2     | 43.8%        | 0.3963         |
-| 8    | Qwen3 235B A22B distillation data    | 3     | 44.2%        | 0.3948         |
+|      | 教师数据                         | Epoch | MATH-500 准确率 | 最终验证损失 |
+| ---- | -------------------------------- | ----- | --------------- | ------------ |
+| 1    | 基础模型（第 3 章）              | -     | 15.2%           | -            |
+| 2    | 推理模型（第 3 章）              | -     | 48.2%           | -            |
+| 3    | DeepSeek R1 蒸馏数据             | 1     | 30.6%           | 0.5436       |
+| 4    | DeepSeek R1 蒸馏数据             | 2     | 32.4%           | 0.5349       |
+| 5    | DeepSeek R1 蒸馏数据             | 3     | 33.6%           | 0.5343       |
+| 6    | Qwen3 235B A22B 蒸馏数据         | 1     | 45.0%           | 0.4043       |
+| 7    | Qwen3 235B A22B 蒸馏数据         | 2     | 43.8%           | 0.3963       |
+| 8    | Qwen3 235B A22B 蒸馏数据         | 3     | 44.2%           | 0.3948       |
 
-The training takes about 30 min on an H100 and about 3 hours on a DGX Spark and uses up to 15 GB RAM.
+在 H100 上训练约需 30 分钟，在 DGX Spark 上约需 3 小时，最多使用 15 GB 内存。
 
-Below are the code snippets to reproduce the results reported in the table.
+下面给出复现表格结果的代码片段。
 
 &nbsp;
-**Row 1**
-
+**第 1 行**
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --dataset_size 500 \
 --which_model base
 ```
 
-&nbsp;
-**Row 2**
 
+&nbsp;
+**第 2 行**
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --dataset_size 500 \
 --which_model reasoning
 ```
 
-&nbsp;
-**Rows 3, 4, & 5**
 
+&nbsp;
+**第 3、4、5 行**
 ```bash
 uv run distill.py \
 --data_path deepseek-r1-math-train.json \
@@ -217,7 +213,7 @@ uv run distill.py \
 --grad_clip 1.0
 ```
 
-Then, to evaluate the epoch checkpoints, run:
+然后，要评估各 epoch 的检查点，请运行：
 
 &nbsp;
 ```bash
@@ -228,11 +224,10 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --checkpoint_path run-1/checkpoints/distill/qwen3-0.6B-distill-step06682-epoch1.pth
 ```
 
-For row 4 and row 5, replace the checkpoint path with `...step13364-epoch2.pth` and `...step20046-epoch3.pth`, respectively.
+第 4 行和第 5 行分别将检查点路径替换为 `...step13364-epoch2.pth` 和 `...step20046-epoch3.pth`。
 
 &nbsp;
-**Rows 6, 7, & 8**
-
+**第 6、7、8 行**
 ```bash
 uv run distill.py \
 --data_path qwen3-235b-a22b-math-train.json \
@@ -244,8 +239,7 @@ uv run distill.py \
 --grad_clip 1.0
 ```
 
-Then, to evaluate the epoch checkpoints, run:
-
+然后，要评估各 epoch 的检查点，请运行：
 ```bash
 uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --dataset_size 500 \
@@ -254,4 +248,4 @@ uv run ../../ch03/02_math500-verifier-scripts/evaluate_math500.py \
 --checkpoint_path run_11/checkpoints/distill/qwen3-0.6B-distill-step05746-epoch1.pth
 ```
 
-For row 7 and row 8, replace the checkpoint path with `...step11492-epoch2.pth` and `...step17238-epoch3.pth`, respectively.
+第 7 行和第 8 行分别将检查点路径替换为 `...step11492-epoch2.pth` 和 `...step17238-epoch3.pth`。

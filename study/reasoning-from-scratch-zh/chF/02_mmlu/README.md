@@ -1,50 +1,50 @@
 
-# MMLU Benchmarking
+# MMLU 基准评估
 
-This bonus material implements three different methods for evaluating models on MMLU. 
-- Method 1 is meant as an intuitive introduction
-- Method 2 is the most widely used method in practice
-- Method 3 is a more robust method that is better suited for reasoning models
+本补充材料实现了三种在 MMLU 上评估模型的方法。
+- 方法 1 用于直观入门
+- 方法 2 是实践中最广泛使用的方法
+- 方法 3 更稳健，更适合推理模型
 
-- Please note that the code loads the [MMLU dataset](https://huggingface.co/datasets/cais/mmlu) from the Hugging Face model hub. So, you need to install the `datasets` Python library before running the code:
+- 请注意，代码会从 Hugging Face 模型中心加载 [MMLU 数据集](https://huggingface.co/datasets/cais/mmlu)。因此，运行代码前需要安装 Python 库 `datasets`：
 
 ```python
 pip install datasets
 ```
 
-or
+或者
 
 ```python
 uv add datasets
 ```
 
-- In the following sections, we apply the MMLU evaluation methods to  (`"high_school_mathematics"`)
+- 在下面各节中，我们将 MMLU 评估方法应用于  (`"high_school_mathematics"`) 子集
 
-- Note that there are many other interesting subsets; this one is chosen for simplicity and efficiency; you can use, for example
+- 请注意，还有许多其他有趣的子集；这里选择这一子集是为了简洁和高效。例如，你可以：
 
-  - Use `--subsets list` to list other available subsets 
+  - 使用 `--subsets list` 列出其他可用子集
 
-  - Use, for example, `--subsets "astronomy,high_school_mathematics"` to select multiple subsets
+  - 例如使用 `--subsets "astronomy,high_school_mathematics"` 选择多个子集
 
-  - Use `--subsets "all"` to evaluate on all subsets
+  - 使用 `--subsets "all"` 在所有子集上评估
 
-(Not that for simplicity and code readability, we focus on a zero-shot, as opposed to a 5-shot, setting.)
+（为保持简洁和代码可读性，我们采用 zero-shot 设置，而不是 5-shot 设置。）
 
 <br>
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不使用 `uv`，请在下面示例中将 `uv run ...py` 替换为 `python ...py`。
 
 ---
 
 &nbsp;
 
-## Method 1: MMLU letter matching
+## 方法 1：MMLU 字母匹配
 
-- We let the model generate the answer
-- We extract the first generated A/B/C/D letter and compare it to the correct answer
-- This is the most intuitive method, but the downside is that the model may not respond with a letter A/B/C/D
+- 让模型生成答案
+- 提取生成内容中的第一个 A/B/C/D 字母，并将其与正确答案比较
+- 这是最直观的方法，但缺点是模型可能不会以 A/B/C/D 字母作答
 
 <br>
 
@@ -53,7 +53,7 @@ uv add datasets
 <br>
 
 ```bash
-➜  02_mmlu git:(main) ✗ uv run 1_letter_matching.py --which_model base     
+➜  02_mmlu git:(main) ✗ uv run 1_letter_matching.py --which_model base
 Using Apple Silicon GPU (MPS)
 Using device: mps
 ✓ qwen3/qwen3-0.6B-base.pth already up-to-date
@@ -88,11 +88,11 @@ MMLU letter accuracy: 57/270 = 21.11% in 43.6s
 
 &nbsp;
 
-## Method 2: Log-probability scoring
+## 方法 2：对数概率评分
 
-- We run the prompt through the model and get log-probabilities (log-probs) for the next token (see chapter 4 for log-probs discussion)
-- For each letter choice, we then compute which token ID would appear first if we appended that letter
-- Then, we compare those four log-probs and pick the highest one (max)
+- 将提示词输入模型，获取下一个词元的对数概率（log-probs；对数概率的讨论见第 4 章）
+- 对每个字母选项，计算在提示词末尾追加该字母后首先出现的词元 ID
+- 然后比较这四个对数概率并选择最高值（max）
 
 <br>
 
@@ -101,7 +101,7 @@ MMLU letter accuracy: 57/270 = 21.11% in 43.6s
 <br>
 
 ```bash
-➜  02_mmlu git:(main) ✗ uv run 2_logprob.py --which_model base 
+➜  02_mmlu git:(main) ✗ uv run 2_logprob.py --which_model base
 Using Apple Silicon GPU (MPS)
 Using device: mps
 ✓ qwen3/qwen3-0.6B-base.pth already up-to-date
@@ -136,12 +136,12 @@ MMLU letter accuracy (log-prob): 57/270 = 21.11% in 22.4s
 
 &nbsp;
 
-## Method 3: Teacher forcing
+## 方法 3：教师强制
 
-- Instead of looking up the log-prob of each of the letters A/B/C/D, a more robust scoring (specifically for reasoning models), is to feed the letter along with the complete answer string
-- For our example, the answer strings are "A. 7", "B. 11", "C. 16", "D. 8"
-- This method is known by the unfortunate term "teacher forcing"
-- This method is the most reliable, but the caveat is that it takes 4x longer than the log-probability approach in method 2 (since we feed the model all 4 answer variants)
+- 不再只查找 A/B/C/D 各字母的对数概率，一种更稳健的评分方法（尤其适用于推理模型）是将字母与完整答案字符串一起输入
+- 在这个示例中，答案字符串是 “A. 7”、“B. 11”、“C. 16”、“D. 8”
+- 这种方法有一个不太理想的术语，叫作“教师强制”（teacher forcing）
+- 这种方法最可靠，但需要注意，它比方法 2 的对数概率方法耗时约 4 倍（因为要将 4 个答案变体全部输入模型）
 
 <br>
 
@@ -150,7 +150,7 @@ MMLU letter accuracy (log-prob): 57/270 = 21.11% in 22.4s
 <br>
 
 ```bash
-➜  02_mmlu git:(main) ✗ uv run 3_teacher_forcing.py --which_model base 
+➜  02_mmlu git:(main) ✗ uv run 3_teacher_forcing.py --which_model base
 Using Apple Silicon GPU (MPS)
 Using device: mps
 ✓ qwen3/qwen3-0.6B-base.pth already up-to-date
@@ -183,53 +183,53 @@ MMLU letter accuracy (teacher-forced): 78/270 = 28.89% in 68.8s
 
 
 
-## Random guessing baseline
+## 随机猜测基线
 
-- This random guessing baseline is just to put the numbers above into perspective
-  
-- A model that guesses randomly with uniform (equal) probability across all answers is expected to achieve $25\%$ accuracy
-  
-- However, for a random guesser, we can expect deviations from the $25\%$ (depending on the sample size)
+- 设置这个随机猜测基线，是为了帮助理解上面的数值
 
-- For instance, we can model one evaluation run as a binomial with $K$ correct out of $n$ questions:
+- 如果模型在所有答案之间以均匀（相等）概率随机猜测，预期准确率为 $25\%$
 
-  - $K \sim \mathrm{Binomial}(n,p)$ with $p=\tfrac14$ and $n=$ number of questions.  
-  - Accuracy $A = K/n$.
+- 但是，对于随机猜测者，准确率可能偏离 $25\%$（具体取决于样本数量）
 
-- Let's walk through this for the *high_school_mathematics* subset with $n=270$
+- 例如，可以将一次评估建模为二项分布：在 $n$ 道题中答对 $K$ 道：
 
-- In general, the properties of the binomial are:
+  - $K \sim \mathrm{Binomial}(n,p)$，其中 $p=\tfrac14$，$n=$ 题目数量。
+  - 准确率 $A = K/n$。
 
-  - Mean: $\mathbb{E}[K] = np$
-  - SD: $\sigma_K = \sqrt{np(1-p)}$
+- 下面以 $n=270$ 的 *high_school_mathematics* 子集为例说明
 
-- For accuracy $A=K/n$:
+- 一般来说，二项分布的性质为：
 
-  - Mean: $\mathbb{E}[A] = p = 0.25$
-  - SD: $\sigma_A = \sqrt{\tfrac{p(1-p)}{n}}$
+  - 均值：$\mathbb{E}[K] = np$
+  - 标准差：$\sigma_K = \sqrt{np(1-p)}$
 
-- Plugging in $n=270$:
+- 对于准确率 $A=K/n$：
 
-  - $\mathbb{E}[A] = 25\%$  
+  - 均值：$\mathbb{E}[A] = p = 0.25$
+  - 标准差：$\sigma_A = \sqrt{\tfrac{p(1-p)}{n}}$
+
+- 代入 $n=270$：
+
+  - $\mathbb{E}[A] = 25\%$
   - $\sigma_A = \sqrt{\tfrac{0.25\cdot 0.75}{270}} \approx 2.64\%$
 
-- Convert the one standard deviation ($\pm 1\sigma$) accuracy bounds to counts:
+- 将一个标准差（$\pm 1\sigma$）的准确率边界转换为答对题数：
 
-  - Lower: $K \le \lfloor 270\,(0.25-0.02636)\rfloor = 60$
-  - Upper: $K \ge \lceil 270\,(0.25+0.02636)\rceil = 75$
-  - (Inside the band is $K=61,\dots,74$; equivalently $A\in[22.36\%,\,27.64\%]$)
+  - 下界：$K \le \lfloor 270\,(0.25-0.02636)\rfloor = 60$
+  - 上界：$K \ge \lceil 270\,(0.25+0.02636)\rceil = 75$
+  - （区间内部为 $K=61,\dots,74$；等价地，$A\in[22.36\%,\,27.64\%]$）
 
-- So, the probability of falling outside this bound is:
+- 因此，落在此边界之外的概率为：
 
   $$
   z = \pm\,\frac{75-67.5}{\sqrt{270\cdot 0.25\cdot 0.75}} \approx \pm 1.054, \qquad
   \Pr(|A-0.25|>0.02636) \approx 2\bigl(1-\Phi(1.054)\bigr) \approx 0.292.
   $$
 
-  So about 29.2% of random-guess runs are below 22.36% or above 27.64%
+  因此，随机猜测运行中约有 29.2% 的结果低于 22.36% 或高于 27.64%
 
-- This means in about $29.2\%$ of cases where the model is random guessing (assuming uniformly), we get an accuracy below $22.36\%$ or above $27.64\%$
-- Below is an empirical look:
+- 这意味着，在模型进行随机猜测（假设均匀分布）的情况下，约 $29.2\%$ 的运行会得到低于 $22.36\%$ 或高于 $27.64\%$ 的准确率
+- 下面是经验结果：
 
 
 ```bash

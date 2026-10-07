@@ -1,92 +1,89 @@
-# Chapter 8 Bonus Material: Use Qwen3 via a Local Hugging Face Wrapper
+# 第 8 章奖励材料：通过本地 Hugging Face 封装使用 Qwen3
 
-This folder shows how to use the scratch [`Qwen3Model`](../../../reasoning_from_scratch/qwen3.py) with Hugging Face `transformers` library by wrapping it in a thin local `PreTrainedModel` class for compatibility.
+本文件夹展示如何将从零实现的 Qwen3Model（../../../reasoning_from_scratch/qwen3.py）封装在轻量的本地 PreTrainedModel 类中，以兼容 Hugging Face transformers 库。
 
-This lets you use:
+这样就可以直接使用本仓库中的本地 .pth 模型文件，包括 Qwen3 基础权重和第 6–8 章生成的兼容检查点：
 
-- `model.generate(...)`
-- `transformers.Trainer`
-
-directly with local `.pth` model files from this repository, including the base Qwen3 weights and compatible checkpoints from chapters 6-8.
+- model.generate(...)
+- transformers.Trainer
 
 &nbsp;
-## Files
+## 文件
 
-- [hf_wrapper.py](hf_wrapper.py): local `PreTrainedModel` wrapper around the from-scratch `Qwen3Model` we use throughout the book
-- [hf_inference.py](hf_inference.py): text generation using the wrapper and the repo's tokenizer
-- [hf_trainer.py](hf_trainer.py): `Trainer` example using the wrapper and the chapter 8 distillation JSON format
+- [hf_wrapper.py](hf_wrapper.py)：围绕本书使用的从零实现 Qwen3Model 的本地 PreTrainedModel 封装
+- [hf_inference.py](hf_inference.py)：使用该封装和仓库分词器生成文本
+- [hf_trainer.py](hf_trainer.py)：使用该封装和第 8 章蒸馏 JSON 格式的 Trainer 示例
 
 ---
 
-**Note**: If you are not a `uv` user, replace `uv run ...py` with `python ...py` in the examples below.
+**注意**：如果你不是 uv 用户，请将示例中的 uv run ...py 替换为 python ...py。
 
 ---
 
 &nbsp;
-## What This Wrapper Does
+## 这个封装做什么
 
-The wrapper keeps the model local to this repository and adapts it to the Hugging Face API.
+该封装将模型保留在本仓库中，并使其适配 Hugging Face API。
 
-Concretely, it:
+具体来说，它会：
 
-- loads a local `.pth` model file directly into `Qwen3Model`
-- wraps that model in a `PreTrainedModel` interface
-- exposes a `forward(...)` method compatible with `Trainer`
-- enables `model.generate(...)`
-- keeps using the repository's `Qwen3Tokenizer`
+- 将本地 .pth 模型文件直接加载到 Qwen3Model
+- 用 PreTrainedModel 接口封装该模型
+- 暴露与 Trainer 兼容的 forward(...) 方法
+- 启用 model.generate(...)
+- 继续使用仓库中的 Qwen3Tokenizer
 
-Why? There were some readers curious about exploring the models further in `transformers`, which has more bells and whistles than the from-scratch code in this repo.
-
-&nbsp;
-## Limitations
-
-This is a small, local wrapper around the scratch model.
-
-Important implications:
-
-- it is meant for environments where `reasoning_from_scratch` is installed
-- it does not provide an `AutoTokenizer.from_pretrained(...)` workflow
-- it does not create a reusable model directory with `config.json` and tokenizer files
-- generation is kept intentionally simple, so it recomputes the full prefix instead of adapting the scratch KV cache to Hugging Face cache classes; if you want full support, you'd need to switch to the [../export_approach](../export_approach)
-
-Note that these constraints keep the code short and focused on local use inside this repository.
+为什么需要它？有些读者希望在 transformers 中进一步探索模型，而 transformers 比本仓库的从零代码提供了更多功能。
 
 &nbsp;
-## Step 1: Install dependencies
+## 限制
 
-This guide uses Hugging Face Transformers in addition to the repository dependencies. 
+这是围绕从零实现模型的小型本地封装。
 
+重要影响：
+
+- 适用于安装了 reasoning_from_scratch 的环境
+- 不提供 AutoTokenizer.from_pretrained(...) 工作流
+- 不会创建包含 config.json 和分词器文件的可复用模型目录
+- 生成逻辑保持有意的简洁：它会重新计算完整前缀，而不是将从零实现的 KV 缓存适配到 Hugging Face 缓存类；如果需要完整支持，应改用 [../export_approach](../export_approach)
+
+这些限制使代码保持简短，并专注于在本仓库内本地使用。
+
+&nbsp;
+## 第 1 步：安装依赖
+
+本指南除了仓库依赖外，还使用 Hugging Face Transformers。
 ```bash
 pip install transformers accelerate
 ```
 
-Or, if you are using `uv`:
 
+如果使用 uv，则运行：
 ```bash
 uv add --dev transformers accelerate
 ```
 
+
 &nbsp;
-## Step 2: Run local wrapped inference
+## 第 2 步：运行本地封装推理
 
-To run the base model through the wrapper, use:
-
+要通过封装运行基础模型，请使用：
 ```bash
   uv run hf_inference.py \
     --tokenizer_kind base \
     --prompt "If x + 7 = 19, what is x?"
 ```
 
-To run the reasoning variant, use:
 
+要运行推理变体，请使用：
 ```bash
   uv run hf_inference.py \
     --tokenizer_kind reasoning \
     --prompt "If x + 7 = 19, what is x?"
 ```
 
-To run a local checkpoint instead:
 
+要改为运行本地检查点，请使用：
 ```bash
 uv run hf_inference.py \
   --tokenizer_kind reasoning \
@@ -94,20 +91,20 @@ uv run hf_inference.py \
   --prompt "If x + 7 = 19, what is x?"
 ```
 
-If `--model_path` is omitted, the script downloads the default base or reasoning model for the selected `--tokenizer_kind`. If `--model_path` is provided, it can point to the base Qwen3 `.pth` file or to any compatible checkpoint produced in chapters 6-8.
 
-Internally, the inference script:
+如果省略 --model_path，脚本会根据选定的 --tokenizer_kind 下载默认的基础模型或推理模型。如果提供 --model_path，它可以指向基础 Qwen3 .pth 文件，或第 6–8 章生成的任何兼容检查点。
 
-1. builds the local wrapper model
-2. loads the selected `.pth` model file into the wrapped `Qwen3Model`
-3. tokenizes the prompt with the repo's tokenizer
-4. calls `model.generate(...)`
+推理脚本内部会：
+
+1. 构建本地封装模型
+2. 将选定的 .pth 模型文件加载到封装后的 Qwen3Model 中
+3. 使用仓库分词器对提示词分词
+4. 调用 model.generate(...)
 
 &nbsp;
-## Step 3: Continue training with `Trainer`
+## 第 3 步：使用 Trainer 继续训练
 
-The same wrapper can also be used with `transformers.Trainer`:
-
+同一个封装也可以与 transformers.Trainer 一起使用：
 ```bash
 uv run hf_trainer.py \
   --tokenizer_kind reasoning \
@@ -119,14 +116,15 @@ uv run hf_trainer.py \
   --logging_steps 1
 ```
 
-As with inference, `--model_path` can point to the base Qwen3 weights or to a compatible chapter 6-8 checkpoint.
 
-The trainer keeps the same answer-only objective used elsewhere in chapter 8:
+与推理一样，--model_path 可以指向基础 Qwen3 权重或第 6–8 章生成的兼容检查点。
 
-- prompt tokens are masked out
-- only answer tokens contribute to the loss
-- reasoning mode wraps teacher traces as `<think>...</think>`
+训练器保留第 8 章其他位置使用的“只训练答案”目标：
 
-The input JSON format matches the distillation data generated in [../../02_generate_distillation_data](../../02_generate_distillation_data).
+- 屏蔽提示词 token
+- 只有答案 token 参与损失
+- 推理模式会将教师轨迹包在 <think>...</think> 中
+
+输入 JSON 格式与 [../../02_generate_distillation_data](../../02_generate_distillation_data) 生成的蒸馏数据一致。
 
 &nbsp;

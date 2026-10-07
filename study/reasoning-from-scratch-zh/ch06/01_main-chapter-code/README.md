@@ -1,7 +1,7 @@
-# Chapter 6: Training Reasoning Models with Reinforcement Learning
+# 第 6 章：使用强化学习训练推理模型
 
 &nbsp;
-## Main chapter code
+## 主要章节代码
 
-- [ch06_main.ipynb](ch06_main.ipynb): main chapter code
-- [ch06_exercise-solutions.ipynb](ch06_exercise-solutions.ipynb): exercise solutions
+- [ch06_main.ipynb](ch06_main.ipynb)：主要章节代码
+- [ch06_exercise-solutions.ipynb](ch06_exercise-solutions.ipynb)：练习解答

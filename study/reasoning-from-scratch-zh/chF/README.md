@@ -1,14 +1,14 @@
-# Appendix F: Common Approaches to LLM Evaluation
+# 附录 F：大语言模型评估的常见方法
 
 &nbsp;
-## Main chapter code
+## 主要章节代码
 
-- [01_main-chapter-code](01_main-chapter-code): the main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code)：主要章节代码与练习解答
 
 
 &nbsp;
-## Bonus materials
+## 补充材料
 
-- [02_mmlu](02_mmlu): MMLU benchmark evaluation with all three different MMLU approaches
-- [03_leaderboards](03_leaderboards): Elo and Bradley-Terry implementations of leaderboard rankings
-- [04_llm-judge](04_llm-judge): LLM-as-a-judge approach, where a judge LLM evaluates a candidate LLM
+- [02_mmlu](02_mmlu)：使用三种不同 MMLU 方法进行 MMLU 基准评估
+- [03_leaderboards](03_leaderboards)：Elo 与 Bradley-Terry 排行榜排名实现
+- [04_llm-judge](04_llm-judge)：大语言模型评审方法，由一个评审大语言模型评估候选大语言模型

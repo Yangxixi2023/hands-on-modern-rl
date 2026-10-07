@@ -1,9 +1,8 @@
-# Chapter 2: Generating Text with a Pre-Trained LLM
+# 第 2 章：使用预训练大语言模型生成文本
 
 
 &nbsp;
-## Main chapter code
+## 本章主要代码
 
-- [ch02_main.ipynb](ch02_main.ipynb): main chapter code
-- [ch02_exercise-solutions.ipynb](ch02_exercise-solutions.ipynb): exercise solutions
-
+- [ch02_main.ipynb](ch02_main.ipynb)：本章主要代码
+- [ch02_exercise-solutions.ipynb](ch02_exercise-solutions.ipynb)：练习解答

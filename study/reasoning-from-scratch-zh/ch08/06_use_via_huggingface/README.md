@@ -1,41 +1,41 @@
-# Chapter 8 Bonus Material: Use Qwen3 with Hugging Face
+# 第 8 章奖励材料：通过 Hugging Face 使用 Qwen3
 
-This folder contains two ways to use the scratch [`Qwen3Model`](../../reasoning_from_scratch/qwen3.py) and compatible `.pth` checkpoints from this repository with Hugging Face `transformers`.
+本文件夹提供两种方式：使用本仓库中的从零实现 [`Qwen3Model`](../../reasoning_from_scratch/qwen3.py) 和兼容的 `.pth` 检查点，并接入 Hugging Face `transformers`。
 
-Both approaches let you use Hugging Face-style inference and training. The difference is whether you want a reusable Hugging Face model directory or a lighter local wrapper around the existing PyTorch model.
+两种方式都支持 Hugging Face 风格的推理和训练。区别在于：你是需要一个可复用的 Hugging Face 模型目录，还是需要在现有 PyTorch 模型外包一层更轻量的本地封装。
 
 &nbsp;
-## Approaches
+## 方案
 
 
 &nbsp;
 ### 1) `wrapper_approach`
 
-The [./wrapper_approach](./wrapper_approach) keeps the model as a local `.pth` file and wraps `Qwen3Model` in a thin local `PreTrainedModel` so it can work with parts of the Hugging Face API.
+[./wrapper_approach](./wrapper_approach) 将模型保留为本地 `.pth` 文件，并在 `Qwen3Model` 外封装一个轻量的本地 `PreTrainedModel`，使其能够使用部分 Hugging Face API。
 
-Use this approach if you want:
+如果你希望：
 
-- the smallest amount of extra code
-- local experimentation inside this repository
-- `model.generate(...)` and `transformers.Trainer` without an export step
-- to load the base model or chapter 6-8 checkpoints directly from `.pth`
+- 尽量少写额外代码
+- 在本仓库内进行本地实验
+- 不经过导出步骤，直接使用 `model.generate(...)` 和 `transformers.Trainer`
+- 直接从 `.pth` 加载基础模型或第 6–8 章的检查点
 
 
 &nbsp;
 ### 2) `export_approach`
 
-The [./export_approach](./export_approach) converts the scratch Qwen3 weights or a compatible checkpoint into a Hugging Face-compatible model folder.
+[./export_approach](./export_approach) 将从零实现的 Qwen3 权重或兼容检查点转换为 Hugging Face 兼容的模型目录。
 
-Use this approach if you want:
+如果你希望：
 
-- a saved model directory with `config.json`, tokenizer files, and weights
-- `AutoConfig`, `AutoTokenizer`, and `AutoModelForCausalLM`
-- a workflow that is closer to how Hugging Face models are usually packaged
+- 保存包含 `config.json`、分词器文件和权重的模型目录
+- 使用 `AutoConfig`、`AutoTokenizer` 和 `AutoModelForCausalLM`
+- 使用更接近 Hugging Face 模型通常打包方式的工作流
 
 
 
 &nbsp;
-## Which To Use?
+## 选择哪种方案？
 
-- Choose [wrapper_approach](wrapper_approach) for learning purposes and if the goal is a lighter local integration with `transformers`.
-- Choose [export_approach](export_approach) if the goal is a creating a Hugging Face model package and optimizing computational performance.
+- 如果目的是学习，或需要与 `transformers` 进行轻量本地集成，请选择 [wrapper_approach](wrapper_approach)。
+- 如果目的是创建 Hugging Face 模型包并优化计算性能，请选择 [export_approach](export_approach)。

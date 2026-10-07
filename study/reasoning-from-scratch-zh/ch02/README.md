@@ -1,13 +1,12 @@
-# Chapter 2: Generating Text with a Pre-Trained LLM
+# 第 2 章：使用预训练大语言模型生成文本
 
 &nbsp;
-## Main chapter code
+## 本章主要代码
 
-- [01_main-chapter-code](01_main-chapter-code): main chapter code and exercise solutions
+- [01_main-chapter-code](01_main-chapter-code)：本章主要代码和练习解答
 
 &nbsp;
-## Bonus material
+## 补充材料
 
-- [02_setup-tips](02_setup-tips/): optional Python setup recommendations and cloud GPU recommendations
-- [03_optimized-LLM](03_optimized-LLM): info on how to use a GPU-optimized version of the LLM
-
+- [02_setup-tips](02_setup-tips/)：可选的 Python 配置建议和云端 GPU 建议
+- [03_optimized-LLM](03_optimized-LLM)：如何使用 GPU 优化版大语言模型的说明
